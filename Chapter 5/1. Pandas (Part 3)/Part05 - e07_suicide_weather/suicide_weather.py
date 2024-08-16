@@ -13,17 +13,11 @@ def suicide_fractions():
 
 def suicide_weather():
     suicide_data = suicide_fractions()
-    weather_data = pd.read_html(
-        "src/List_of_countries_by_average_yearly_temperature.html",
-        header=0,
-        index_col="Country",
-    )[0]
+    weather_data = pd.read_html("src/List_of_countries_by_average_yearly_temperature.html", header=0, index_col="Country",)[0]
 
     weather_data = weather_data.iloc[:, 0].str.replace("\u2212", "-").astype(float)
 
-    merged_data = pd.merge(
-        weather_data, suicide_data, left_index=True, right_index=True
-    )
+    merged_data = pd.merge(weather_data, suicide_data, left_index=True, right_index=True)
 
     spearman_correlation = merged_data.corr(method="spearman").iloc[0, 1]
 
