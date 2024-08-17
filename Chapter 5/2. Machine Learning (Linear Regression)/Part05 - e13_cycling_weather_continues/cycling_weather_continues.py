@@ -60,27 +60,19 @@ def cycling_weather_continues(station):
 
     # Merge cycling data with the specified station's counts,
     # and filter for 2017 only
-    new_df = pd.merge(
-        df.loc[:, "Weekday":"Hour"],
-        df.loc[:, station],
-        left_index=True,
-        right_index=True,
-    )
+    new_df = pd.merge(df.loc[:, "Weekday":"Hour"], df.loc[:, station], left_index=True, right_index=True)
     new_df = new_df[new_df.Year == 2017]
 
     # Aggregate cycling counts by day
     daily_counts = new_df.groupby(["Month", "Day"])[station].sum().reset_index()
 
     # Merge aggregated counts with weather data
-    merged_df = pd.merge(
-        weather_df, daily_counts, left_on=["m", "d"], right_on=["Month", "Day"]
-    )
+    merged_df = pd.merge(weather_df, daily_counts, left_on=["m", "d"], right_on=["Month", "Day"])
+
     # Fill the missing values
     merged_df.fillna(method="ffill", inplace=True)
 
-    X = merged_df[
-        ["Precipitation amount (mm)", "Snow depth (cm)", "Air temperature (degC)"]
-    ]
+    X = merged_df[["Precipitation amount (mm)", "Snow depth (cm)", "Air temperature (degC)"]]
     Y = merged_df[station]
 
     model = LinearRegression(fit_intercept=True)
